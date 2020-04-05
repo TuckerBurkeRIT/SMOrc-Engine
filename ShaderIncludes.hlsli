@@ -101,6 +101,14 @@ float Attenuate(Light light, float3 worldPos)
 	return att * att;
 }
 
+float3 Penumbra(PixelData pixelData, Light light)
+{
+	// Calculate the falloff
+	float3 toLight = normalize(light.position - pixelData.worldPos);
+
+	return pow(saturate(dot(-toLight, light.direction)), light.spotFalloff);
+}
+
 float3 OutputFinalLight(float diffuse, float spec, float materialShininess, Light light) 
 {
 	spec *= any(diffuse);
@@ -136,9 +144,7 @@ float3 AmbientLight(Light light)
 
 float3 SpotLight(PixelData pixelData, float3 cameraPosition, Light light)
 {
-	// Calculate the spot falloff
-	float3 toLight = normalize(light.position - pixelData.worldPos);
-	float penumbra = pow(saturate(dot(-toLight, light.direction)), light.spotFalloff);
+	float penumbra = Penumbra(pixelData, light);
 
 	// Combine with the point light calculation
 	return PointLight(pixelData, cameraPosition, light) * penumbra;
