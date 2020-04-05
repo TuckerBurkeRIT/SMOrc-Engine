@@ -422,6 +422,9 @@ void Game::Update(float deltaTime, float totalTime)
 	entities[4]->GetTransform()->Rotate(0, 0,  offset*2.f);
 
 	playerCamera->UpdateViewMatrix();
+
+	// Light flicker test
+	lights[0].intensity = (rand() % 100) / 10;
 }
 
 // --------------------------------------------------------
